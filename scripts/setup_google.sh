@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
 # Google Workspace setup for Claude Code
-# Run this after getting your service account JSON key from your admin.
 #
 # Usage:
 #   bash scripts/setup_google.sh /path/to/your-key.json your-email@domain.com
@@ -25,24 +24,44 @@ fi
 
 # Create config directory
 TARGET_DIR="$HOME/.config/claude-code"
-TARGET_FILE="$TARGET_DIR/google-service-account.json"
+KEY_FILE="$TARGET_DIR/google-service-account.json"
+CONFIG_FILE="$TARGET_DIR/config.json"
 
 mkdir -p "$TARGET_DIR"
 
-# Copy key file
-cp "$KEY_SOURCE" "$TARGET_FILE"
-chmod 600 "$TARGET_FILE"
+# Copy key file with secure permissions
+cp "$KEY_SOURCE" "$KEY_FILE"
+chmod 600 "$KEY_FILE"
 
-echo "Service account key installed at: $TARGET_FILE"
+echo "Service account key installed at: $KEY_FILE"
+
+# Write config file
+python3 -c "
+import json, os
+config_path = os.path.expanduser('$CONFIG_FILE')
+config = {}
+if os.path.exists(config_path):
+    with open(config_path) as f:
+        config = json.load(f)
+config['google_email'] = '$USER_EMAIL'
+config['service_account_key'] = '$KEY_FILE'
+with open(config_path, 'w') as f:
+    json.dump(config, f, indent=2)
+print(f'Config written to: {config_path}')
+print(f'  google_email: $USER_EMAIL')
+"
+
 echo ""
 
 # Install dependencies
 echo "Installing Google API dependencies..."
-pip install --quiet google-auth google-auth-oauthlib google-api-python-client
+pip install --quiet google-auth google-auth-oauthlib google-api-python-client 2>/dev/null || \
+pip3 install --quiet google-auth google-auth-oauthlib google-api-python-client
 
 echo ""
 echo "Testing connection..."
 echo ""
 
-# Run connection test
-python3 "$(dirname "$0")/test_google_connection.py" "$USER_EMAIL"
+# Run verification
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+python3 "$SCRIPT_DIR/google_client.py"
