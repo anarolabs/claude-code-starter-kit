@@ -109,7 +109,42 @@ Ask: "Do you want to set up tool discipline rules? This forces Claude to use its
 
 ---
 
-## Phase 7: Building your first skill
+## Phase 7: Google Workspace connection
+
+**Why it matters**: With Google Workspace connected, Claude can read your email, search your Drive, read and create Docs, and work with Sheets - all from the conversation. No browser switching.
+
+**Pre-requisite**: Your admin should have given you a service account JSON key file. If you don't have one, skip this step and ask your admin to set one up.
+
+Ask: "Do you have a Google service account JSON key file from your admin?"
+- Yes, I have the file
+- No, skip for now
+
+If yes:
+
+1. Ask for the path to their JSON key file
+2. Ask for their Google Workspace email address
+3. Run the setup script:
+
+```bash
+bash scripts/setup_google.sh /path/to/their-key.json their-email@domain.com
+```
+
+This will:
+- Copy the key to `~/.config/claude-code/google-service-account.json`
+- Set secure permissions (600)
+- Install Google API dependencies
+- Test the connection against Gmail, Drive, Sheets, and Calendar
+
+If all tests pass, tell them: "Google Workspace is connected. Claude can now read your email, access your Drive, and work with your Docs and Sheets."
+
+If any tests fail, check:
+- Is the email address correct?
+- Has the admin authorized domain-wide delegation for this service account?
+- Are the APIs enabled in Google Cloud Console?
+
+---
+
+## Phase 8: Building your first skill
 
 **Why it matters**: Skills (slash commands) are reusable workflows. Instead of explaining a multi-step process every time, you write it once as a markdown file and invoke it with `/command-name`.
 
@@ -123,7 +158,7 @@ Save their answer to their CLAUDE.md as a reminder.
 
 ---
 
-## Phase 8: Generate and install
+## Phase 9: Generate and install
 
 Now generate all the config files based on the user's choices:
 

@@ -7,7 +7,7 @@ A care package for getting the most out of Claude Code. Instead of figuring it o
 ```
 claude-code-starter-kit/
 ├── .claude/commands/
-│   └── onboard.md          # Interactive onboarding skill
+│   └── onboard.md              # Interactive onboarding skill
 ├── examples/
 │   ├── hooks/
 │   │   └── date-hook-example.md
@@ -18,6 +18,10 @@ claude-code-starter-kit/
 │   ├── tool-discipline.md
 │   ├── first-skill.md
 │   └── ways-of-working.md
+├── scripts/
+│   ├── google_client.py        # Google Workspace auth wrapper
+│   ├── setup_google.sh         # One-command Google setup
+│   └── test_google_connection.py  # Verify all services work
 └── README.md
 ```
 
@@ -35,7 +39,8 @@ The onboarding skill walks you through 7 preference categories:
 4. **File organization** - naming conventions and project structure
 5. **Memory** - how Claude remembers things across sessions
 6. **Tool discipline** - cleaner output, fewer permission prompts
-7. **Your first skill** - identify a workflow to automate
+7. **Google Workspace** - connect Gmail, Drive, Docs, Sheets via service account
+8. **Your first skill** - identify a workflow to automate
 
 At the end, it generates and installs your config files.
 
@@ -45,6 +50,16 @@ At the end, it generates and installs your config files.
 - `WRITING_STYLE_GUIDE.md` - your voice and tone definition
 - `~/.claude/settings.json` - hooks and permissions
 - `~/.claude/memory/MEMORY.md` - seed file for auto-memory
+
+## Google Workspace setup (if your admin prepared it)
+
+If your admin gave you a service account JSON key file, the onboarding will set it up automatically. Or run it manually:
+
+```bash
+bash scripts/setup_google.sh ~/Downloads/your-key.json your-email@domain.com
+```
+
+This connects Claude Code to your Gmail, Drive, Docs, Sheets, and Calendar. No browser auth flows, no token expiry.
 
 ## After onboarding
 
